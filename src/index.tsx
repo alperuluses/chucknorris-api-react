@@ -1,19 +1,33 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import { ChakraProvider } from "@chakra-ui/react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { Global } from "@emotion/react";
+import { extendTheme } from "@chakra-ui/react";
+
+const Fonts = () => (
+  <Global
+    styles={`
+
+      @font-face {
+        font-family: 'Press Start 2P', cursive;
+        src: url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Press+Start+2P&family=Roboto:wght@300;400;500&display=swap') format('woff2')
+      }
+      `}
+  />
+);
+export default Fonts;
+const theme = extendTheme({
+  fonts: {
+    body: `'Press Start 2P', cursive`,
+  },
+});
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
+  <ChakraProvider theme={theme}>
     <App />
-  </React.StrictMode>
+  </ChakraProvider>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
