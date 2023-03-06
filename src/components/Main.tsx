@@ -9,7 +9,7 @@ const firstSelectedCategorie = "all";
 const mainBoxCss = {
   backgroundColor: "rgb(156 56 40 / 95%)",
   padding: "40px",
-  maxWidth: { base: "80%", md: "60%" },
+  w: { base: "80%", md: "800px" },
   minHeight: "300px",
   h: { md: "300px" },
   position: "relative",
