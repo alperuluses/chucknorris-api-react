@@ -22,14 +22,14 @@ const Main = () => {
   const [currentCategorie, setCurrentCategorie] = useState<string>(
     firstSelectedCategorie
   );
-  const { response, error, isLoading, categories, getJoke } = useRequest(
+  const { response, status, categories, getJoke } = useRequest(
     BASE_URL,
     CATEGORIES_URL,
     currentCategorie
   );
 
   return (
-    <BoxLayout mainBoxCss={mainBoxCss}>
+    <BoxLayout mainBoxCss={mainBoxCss} status={status}>
       <Image
         position="absolute"
         top="0"
@@ -40,9 +40,6 @@ const Main = () => {
       ></Image>
       <Flex h="100%" flexDirection="column" justifyContent="space-between">
         <Box>
-          {isLoading && <Text>Loading...</Text>}
-          {error && <Text>{error}</Text>}
-
           <Text>{response && response.value}</Text>
         </Box>
         <Box

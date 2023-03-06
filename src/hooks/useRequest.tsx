@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { ERROR_MESSAGE } from "../utils/constants";
+import { Status } from "../utils/constants";
 
 const useRequest = (
   BASE_URL: string,
@@ -8,8 +8,7 @@ const useRequest = (
   currentCategorie: string
 ) => {
   const [response, setResponse] = useState<RandomResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [status, setStatus] = useState<Status | null>(null);
   const [categories, setCategories] = useState<Categories | null>(null);
 
   useEffect(() => {
@@ -20,7 +19,7 @@ const useRequest = (
   }, []);
 
   const getJoke = async (BASE_URL: string) => {
-    setIsLoading(true);
+    setStatus("Loading");
     const createUrl =
       currentCategorie === "all"
         ? BASE_URL
@@ -30,31 +29,28 @@ const useRequest = (
     try {
       const { data } = await axios<RandomResponse>(createUrl);
       setResponse(data);
-      setIsLoading(false);
+      setStatus("Complated");
     } catch (error) {
-      setError(ERROR_MESSAGE);
-      setIsLoading(false);
+      setStatus("Error");
     }
   };
 
   const getCategories = (CATEGORIES_URL: string) => {
-    setIsLoading(true);
+    setStatus("Loading");
 
     // Axios usage with Promise
     axios
       .get<Categories>(CATEGORIES_URL)
       .then(function (response) {
-        setError(null);
         setCategories(response.data);
-        setIsLoading(false);
+        setStatus("Complated");
       })
       .catch(function (error) {
-        setError(error.message);
-        setIsLoading(false);
+        setStatus("Error");
       });
   };
 
-  return { response, error, isLoading, categories, getJoke };
+  return { response, status, categories, getJoke };
 };
 
 export default useRequest;
