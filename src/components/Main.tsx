@@ -3,90 +3,92 @@ import norris from "../public/img/norris.gif";
 import useRequest from "../hooks/useRequest";
 import { BASE_URL, CATEGORIES_URL } from "../utils/constants";
 import { useState } from "react";
+import BoxLayout from "../layout/BoxLayout";
+
+const firstSelectedCategorie = "all";
+const mainBoxCss = {
+  backgroundColor: "rgb(156 56 40 / 95%)",
+  padding: "40px",
+  maxWidth: { base: "80%", md: "60%" },
+  minHeight: "300px",
+  h: { md: "300px" },
+  position: "relative",
+  borderRadius: "10px",
+  boxShadow: "1px 1px 1px 10px #7b2a20",
+  color: "white",
+};
+
 const Main = () => {
-  const firstSelectedCategorie = "all";
   const [currentCategorie, setCurrentCategorie] = useState<string>(
     firstSelectedCategorie
   );
-  const { response, error, isLoading, categories, requestOne } = useRequest(
+  const { response, error, isLoading, categories, getJoke } = useRequest(
     BASE_URL,
     CATEGORIES_URL,
     currentCategorie
   );
-  const mainBoxCss = {
-    backgroundColor: "rgb(156 56 40 / 95%)",
-    padding: "40px",
-    maxWidth: { base: "80%", md: "60%" },
-    minHeight: "300px",
-    h: { md: "300px" },
-    position: "relative",
-    borderRadius: "10px",
-    boxShadow: "1px 1px 1px 10px #7b2a20",
-    color: "white",
-  };
 
   return (
-    <Flex alignItems="center" justifyContent="center" h="100vh" fontSize="20px">
-      <Box sx={mainBoxCss}>
-        <Image
-          position="absolute"
-          top="0"
-          left="50%"
-          transform=" translate(-50%, -112%)"
-          w="60px"
-          src={norris}
-        ></Image>
-        <Flex h="100%" flexDirection="column" justifyContent="space-between">
-          <Box>
-            {isLoading && <Text>Loading...</Text>}
-            {error && <Text>{error}</Text>}
+    <BoxLayout mainBoxCss={mainBoxCss}>
+      <Image
+        position="absolute"
+        top="0"
+        left="50%"
+        transform=" translate(-50%, -112%)"
+        w="60px"
+        src={norris}
+      ></Image>
+      <Flex h="100%" flexDirection="column" justifyContent="space-between">
+        <Box>
+          {isLoading && <Text>Loading...</Text>}
+          {error && <Text>{error}</Text>}
 
-            <Text>{response && response.value}</Text>
-          </Box>
-          <Box
-            display="flex"
-            alignItems={{ base: "center", md: "flex-end" }}
-            justifyContent="center"
-            gap="10px"
-            flexDirection={{ base: "column", md: "row" }}
+          <Text>{response && response.value}</Text>
+        </Box>
+        <Box
+          display="flex"
+          alignItems={{ base: "center", md: "flex-end" }}
+          justifyContent="center"
+          marginTop="20px"
+          gap="10px"
+          flexDirection={{ base: "column", md: "row" }}
+        >
+          <Button
+            onClick={() => getJoke(BASE_URL)}
+            colorScheme="yellow"
+            variant="solid"
+            px="5"
           >
-            <Button
-              onClick={() => requestOne(BASE_URL)}
-              colorScheme="yellow"
-              variant="solid"
-              px="5"
-            >
-              Get a joke
-            </Button>
+            Get a joke
+          </Button>
 
-            <Select
-              variant="outline"
-              maxW="200px"
-              minW="200px"
-              isDisabled={!categories ? true : false}
-              value={currentCategorie}
-              onChange={(e) => {
-                setCurrentCategorie(e.target.value);
-              }}
-            >
-              <option style={{ background: "#7b2a20" }} value="all">
-                Random Categories
-              </option>
-              {categories &&
-                categories.map((v: string, i: number) => (
-                  <option
-                    key={`${v}_${i}`}
-                    style={{ backgroundColor: "#cc5c3f" }}
-                    value={v}
-                  >
-                    {v}
-                  </option>
-                ))}
-            </Select>
-          </Box>
-        </Flex>
-      </Box>
-    </Flex>
+          <Select
+            variant="outline"
+            w="auto"
+            minW="200px"
+            isDisabled={!categories ? true : false}
+            value={currentCategorie}
+            onChange={(e) => {
+              setCurrentCategorie(e.target.value);
+            }}
+          >
+            <option style={{ background: "#7b2a20" }} value="all">
+              Random Categories
+            </option>
+            {categories &&
+              categories.map((v: string, i: number) => (
+                <option
+                  key={`${v}_${i}`}
+                  style={{ backgroundColor: "#cc5c3f" }}
+                  value={v}
+                >
+                  {v}
+                </option>
+              ))}
+          </Select>
+        </Box>
+      </Flex>
+    </BoxLayout>
   );
 };
 

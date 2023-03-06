@@ -1,61 +1,60 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { ERROR_MESSAGE } from "../utils/constants";
+
 const useRequest = (
   BASE_URL: string,
   CATEGORIES_URL: string,
   currentCategorie: string
 ) => {
-  const [response, setResponse] = useState<randomResponse | null>(null);
+  const [response, setResponse] = useState<RandomResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [categories, setCategories] = useState<categories | null>(null);
+  const [categories, setCategories] = useState<Categories | null>(null);
 
   useEffect(() => {
-    requestOne(BASE_URL);
-    getCategories(CATEGORIES_URL);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [BASE_URL, CATEGORIES_URL]);
+    getJoke(BASE_URL);
+    getCategories(CATEGORIES_URL); //Get categories for select box
 
-  const requestOne = (BASE_URL: string) => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getJoke = async (BASE_URL: string) => {
     setIsLoading(true);
     const createUrl =
       currentCategorie === "all"
         ? BASE_URL
         : `${BASE_URL}?category=${currentCategorie}`;
-    axios
-      .get<randomResponse>(createUrl)
-      .then(function (response) {
-        // handle success
 
-        setResponse(response.data);
-        setIsLoading(false);
-      })
-      .catch(function (error) {
-        // handle error
-        setError(error.message);
-        setIsLoading(false);
-      });
+    // Axios usage with async-await
+    try {
+      const { data } = await axios<RandomResponse>(createUrl);
+      setResponse(data);
+      setIsLoading(false);
+    } catch (error) {
+      setError(ERROR_MESSAGE);
+      setIsLoading(false);
+    }
   };
 
   const getCategories = (CATEGORIES_URL: string) => {
     setIsLoading(true);
+
+    // Axios usage with Promise
     axios
-      .get<categories>(CATEGORIES_URL)
+      .get<Categories>(CATEGORIES_URL)
       .then(function (response) {
-        // handle success
-        
+        setError(null);
         setCategories(response.data);
         setIsLoading(false);
-        console.log(response.data);
       })
       .catch(function (error) {
-        // handle error
         setError(error.message);
         setIsLoading(false);
       });
   };
 
-  return { response, error, isLoading, categories, requestOne };
+  return { response, error, isLoading, categories, getJoke };
 };
 
 export default useRequest;

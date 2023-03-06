@@ -4,7 +4,7 @@ import background from "../public/img/town.png";
 
 import Main from "../components/Main";
 
-export default function test() {
+export default function test() {0
   const mainContainerCss = {
     background:
       "linear-gradient(180deg, rgba(0,212,255,0.3) 62%, rgba(150,75,0,1) 100%)",

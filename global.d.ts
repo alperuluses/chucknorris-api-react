@@ -1,4 +1,4 @@
-interface randomResponse {
+interface RandomResponse {
     icon_url: string
     categories: Array<string>
     id: string
@@ -7,4 +7,4 @@ interface randomResponse {
     created_at: string
 }
 
-type categories = string[]
+type Categories = string[]
