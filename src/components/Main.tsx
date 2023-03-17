@@ -22,8 +22,11 @@ const Main = () => {
   const [currentCategorie, setCurrentCategorie] = useState<string>(
     firstSelectedCategorie
   );
-  const { isError, isSuccess, isLoading, data, categoryData, fetchNewJoke } =
-    useRequest(BASE_URL, CATEGORIES_URL, currentCategorie);
+  const { isError, isLoading, data, categoryData, fetchNewJoke } = useRequest(
+    BASE_URL,
+    CATEGORIES_URL,
+    currentCategorie
+  );
 
   return (
     <BoxLayout mainBoxCss={mainBoxCss} status={{ isLoading, isError }}>
