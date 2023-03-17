@@ -7,4 +7,9 @@ interface RandomResponse {
     created_at: string
 }
 
+interface IStatus {
+    isLoading: boolean,
+    isError: boolean
+}
 type Categories = string[]
+type Status = "Loading" | "Complated" | "Error" | null 
