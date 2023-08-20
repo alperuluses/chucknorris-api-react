@@ -1,56 +1,46 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { Status } from "../utils/constants";
+import { useQuery } from "react-query";
 
 const useRequest = (
   BASE_URL: string,
   CATEGORIES_URL: string,
   currentCategorie: string
 ) => {
-  const [response, setResponse] = useState<RandomResponse | null>(null);
-  const [status, setStatus] = useState<Status | null>(null);
-  const [categories, setCategories] = useState<Categories | null>(null);
-
-  useEffect(() => {
-    getJoke(BASE_URL);
-    getCategories(CATEGORIES_URL); //Get categories for select box
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getJoke = async (BASE_URL: string) => {
-    setStatus("Loading");
+  const newJoke = async () => {
     const createUrl =
       currentCategorie === "all"
         ? BASE_URL
         : `${BASE_URL}?category=${currentCategorie}`;
-
-    // Axios usage with async-await
-    try {
-      const { data } = await axios<RandomResponse>(createUrl);
-      setResponse(data);
-      setStatus("Complated");
-    } catch (error) {
-      setStatus("Error");
-    }
+    const { data } = await axios<RandomResponse>(createUrl);
+    return data;
+  };
+  const getCategories = async () => {
+    const { data } = await axios<Categories>(CATEGORIES_URL);
+    return data;
   };
 
-  const getCategories = (CATEGORIES_URL: string) => {
-    setStatus("Loading");
+  const {
+    isError,
+    isSuccess,
+    isLoading,
+    data,
+    refetch: fetchNewJoke,
+  } = useQuery(["jokeQuery"], newJoke, { refetchOnWindowFocus: false });
 
-    // Axios usage with Promise
-    axios
-      .get<Categories>(CATEGORIES_URL)
-      .then(function (response) {
-        setCategories(response.data);
-        setStatus("Complated");
-      })
-      .catch(function (error) {
-        setStatus("Error");
-      });
+  const { isError: isErrorCategories, data: categoryData } = useQuery(
+    ["categoriesQuery"],
+    getCategories
+  );
+
+  return {
+    isError,
+    isSuccess,
+    isLoading,
+    data,
+    isErrorCategories,
+    categoryData,
+    fetchNewJoke,
   };
-
-  return { response, status, categories, getJoke };
 };
 
 export default useRequest;

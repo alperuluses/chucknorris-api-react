@@ -1,7 +1,7 @@
 import { Box, Flex, Button, Text, Image, Select } from "@chakra-ui/react";
 import norris from "../public/img/norris.gif";
 import useRequest from "../hooks/useRequest";
-import { BASE_URL, CATEGORIES_URL } from "../utils/constants";
+import { BASE_URL, CATEGORIES_URL } from "../constants";
 import { useState } from "react";
 import BoxLayout from "../layout/BoxLayout";
 
@@ -22,14 +22,14 @@ const Main = () => {
   const [currentCategorie, setCurrentCategorie] = useState<string>(
     firstSelectedCategorie
   );
-  const { response, status, categories, getJoke } = useRequest(
+  const { isError, isLoading, data, categoryData, fetchNewJoke } = useRequest(
     BASE_URL,
     CATEGORIES_URL,
     currentCategorie
   );
 
   return (
-    <BoxLayout mainBoxCss={mainBoxCss} status={status}>
+    <BoxLayout mainBoxCss={mainBoxCss} status={{ isLoading, isError }}>
       <Image
         position="absolute"
         top="0"
@@ -40,7 +40,7 @@ const Main = () => {
       ></Image>
       <Flex h="100%" flexDirection="column" justifyContent="space-between">
         <Box>
-          <Text>{response && response.value}</Text>
+          <Text>{data && data.value}</Text>
         </Box>
         <Box
           display="flex"
@@ -51,7 +51,7 @@ const Main = () => {
           flexDirection={{ base: "column", md: "row" }}
         >
           <Button
-            onClick={() => getJoke(BASE_URL)}
+            onClick={() => fetchNewJoke()}
             colorScheme="yellow"
             variant="solid"
             px="5"
@@ -63,7 +63,7 @@ const Main = () => {
             variant="outline"
             w="auto"
             minW="200px"
-            isDisabled={!categories ? true : false}
+            isDisabled={!categoryData ? true : false}
             value={currentCategorie}
             onChange={(e) => {
               setCurrentCategorie(e.target.value);
@@ -72,8 +72,8 @@ const Main = () => {
             <option style={{ background: "#7b2a20" }} value="all">
               Random Categories
             </option>
-            {categories &&
-              categories.map((v: string, i: number) => (
+            {categoryData &&
+              categoryData.map((v: string, i: number) => (
                 <option
                   key={`${v}_${i}`}
                   style={{ backgroundColor: "#cc5c3f" }}
